@@ -10,6 +10,9 @@ public class DrawLine : MonoBehaviour
 
     public GameObject bout;
 
+    public Collider2D colliderSpell;
+    public Camera cam;
+
     // Structure for line points
     struct myLine
     {
@@ -30,7 +33,9 @@ public class DrawLine : MonoBehaviour
         pointsList = new List<Vector3>();
         //        renderer.material.SetTextureOffset(
     }
-    //    -----------------------------------    
+    //    -----------------------------------   
+    
+  
     void Update()
     {
         // If mouse button down, remove old line and set its color to green
@@ -53,14 +58,32 @@ public class DrawLine : MonoBehaviour
             mousePos = bout.transform.position;// Camera.main.ScreenToWorldPoint(bout.transform.position);// Camera.main.ScreenToWorldPoint(bout.transform.position);//Input.mousePosition);
      
             //mousePos.z = 1.0f;//0;
-            Debug.Log(mousePos+" // "+Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
             if (!pointsList.Contains(mousePos))
             {
-                Debug.Log("coucou + "+mousePos);
                 pointsList.Add(mousePos);
-                Debug.Log(pointsList.Count);
+
                 line.SetVertexCount(pointsList.Count);
                 line.SetPosition(pointsList.Count - 1, (Vector3)pointsList[pointsList.Count - 1]);
+
+                Vector3 checkCollider = pointsList[pointsList.Count - 1];
+                Vector3 pos = cam.ScreenToWorldPoint(checkCollider);
+                Debug.Log(checkCollider+"  //  "+pos + "  //  "+new Vector2(pos.x, pos.y));
+
+                Debug.Log(colliderSpell.bounds.Contains(pos));
+                    if (colliderSpell.OverlapPoint(pos))
+                    {
+                        Debug.Log("couocu");
+                    }
+
+
+                /*
+                    RaycastHit2D hit = Physics2D.Raycast(new Vector2(pos.x,pos.y), Vector2.zero, Mathf.Infinity);
+                if (hit.collider != null)
+                {
+                    Debug.Log("dedans");
+                }
+             */
                 if (isLineCollide())
                 {
                     isMousePressed = false;
